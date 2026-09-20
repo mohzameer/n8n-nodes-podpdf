@@ -3,6 +3,9 @@
 	"version": "0.1.0",
 	"description": "Turn HTML, Markdown, URLs and templates into PDFs with the PodPDF API.",
 	"license": "MIT",
+	"publishConfig": {
+		"access": "public"
+	},
 	"homepage": "https://podpdf.com",
 	"keywords": [
 		"n8n-community-node-package",
