@@ -19,6 +19,8 @@
 #
 # ─── ONE-TIME SETUP ────────────────────────────────────────────────────────────
 #
+# This repository uses Option A. Option B is kept for reference only.
+#
 # Option A — OIDC Trusted Publishing (recommended, no long-lived secrets):
 #   1. Log in to npmjs.com and open your package's settings.
 #   2. Under "Publish access" → "Trusted Publishers", click "Add a publisher".
@@ -29,6 +31,8 @@
 #        Environment:      (leave blank unless you use GitHub Environments)
 #   4. Leave the NPM_TOKEN secret unset in this repository. GitHub's OIDC
 #      token is used instead — no secret ever touches your repo settings.
+#   5. Under "Allowed actions", leave direct publishing unchecked. This workflow
+#      stages the version; you approve it with 2FA, which CI cannot do.
 #
 # Option B — npm Automation Token (fallback):
 #   1. On npmjs.com: Access Tokens → Generate New Token → Granular Access Token.
@@ -89,20 +93,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Release
-        # Publishes to npm with a provenance attestation (requires id-token: write above).
-        # Lint and build run automatically as part of the release process.
-        #
-        # Option A (OIDC): leave NPM_TOKEN unset — the token step is skipped and
-        #   npm uses the OIDC exchange instead.
-        # Option B (token): set NPM_TOKEN in repo secrets — it is written to
-        #   .npmrc here before publishing.
+      - name: Lint and build
+        # `npm stage publish` replaces `npm run release` (which publishes directly), so the
+        # checks that release ran have to run explicitly.
         run: |
-          # `if`, not `[ … ] && …`: under `bash -e` the short-circuit would fail the whole
-          # step when NPM_TOKEN is unset, which is exactly the Trusted Publishing case.
-          if [ -n "$NPM_TOKEN" ]; then
-            npm config set //registry.npmjs.org/:_authToken "$NPM_TOKEN"
-          fi
-          npm run release
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          npm run lint
+          npm run build
+
+      - name: Stage the release on npm
+        # Trusted Publishing (OIDC) authenticates this job — no NPM_TOKEN anywhere. The
+        # package's trusted publisher is set to staging only, so this uploads the version
+        # and waits: approve it at npmjs.com > Staged Packages, or with
+        # `npm stage approve <stage-id>`. Both need 2FA, which a workflow cannot supply.
+        # Provenance still comes from the id-token permission above.
+        run: npm stage publish --provenance --access public
