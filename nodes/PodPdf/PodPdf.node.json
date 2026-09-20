@@ -1,0 +1,18 @@
+{
+	"node": "n8n-nodes-podpdf.podPdf",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Utility", "Productivity"],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://github.com/mohzameer/n8n-nodes-podpdf#credentials"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://apidocs.podpdf.com"
+			}
+		]
+	}
+}

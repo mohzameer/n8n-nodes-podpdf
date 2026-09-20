@@ -1,0 +1,61 @@
+{
+	"name": "n8n-nodes-podpdf",
+	"version": "0.1.0",
+	"description": "Turn HTML, Markdown, URLs and templates into PDFs with the PodPDF API.",
+	"license": "MIT",
+	"homepage": "https://podpdf.com",
+	"keywords": [
+		"n8n-community-node-package",
+		"n8n",
+		"podpdf",
+		"pdf",
+		"html-to-pdf",
+		"markdown-to-pdf"
+	],
+	"author": {
+		"name": "PodPDF",
+		"email": "podpdfapp@gmail.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/mohzameer/n8n-nodes-podpdf.git"
+	},
+	"bugs": {
+		"url": "https://github.com/mohzameer/n8n-nodes-podpdf/issues"
+	},
+	"scripts": {
+		"build": "n8n-node build",
+		"build:watch": "tsc --watch",
+		"dev": "n8n-node dev",
+		"lint": "n8n-node lint",
+		"lint:fix": "n8n-node lint --fix",
+		"test": "vitest run",
+		"release": "n8n-node release",
+		"prepublishOnly": "n8n-node prerelease"
+	},
+	"files": [
+		"dist"
+	],
+	"n8n": {
+		"n8nNodesApiVersion": 1,
+		"strict": true,
+		"credentials": [
+			"dist/credentials/PodPdfApi.credentials.js"
+		],
+		"nodes": [
+			"dist/nodes/PodPdf/PodPdf.node.js"
+		]
+	},
+	"devDependencies": {
+		"@n8n/node-cli": "0.48.5",
+		"eslint": "9.39.4",
+		"n8n-workflow": "2.39.3",
+		"prettier": "3.8.3",
+		"release-it": "20.2.0",
+		"typescript": "5.9.3",
+		"vitest": "4.1.11"
+	},
+	"peerDependencies": {
+		"n8n-workflow": "*"
+	}
+}
