@@ -83,6 +83,9 @@ jobs:
           node-version: 'lts/*'
           cache: 'npm'
 
+      - name: Use an npm that supports Trusted Publishing (OIDC)
+        run: npm install -g npm@latest
+
       - name: Install dependencies
         run: npm ci
 
@@ -95,7 +98,11 @@ jobs:
         # Option B (token): set NPM_TOKEN in repo secrets — it is written to
         #   .npmrc here before publishing.
         run: |
-          [ -n "$NPM_TOKEN" ] && npm config set //registry.npmjs.org/:_authToken "$NPM_TOKEN"
+          # `if`, not `[ … ] && …`: under `bash -e` the short-circuit would fail the whole
+          # step when NPM_TOKEN is unset, which is exactly the Trusted Publishing case.
+          if [ -n "$NPM_TOKEN" ]; then
+            npm config set //registry.npmjs.org/:_authToken "$NPM_TOKEN"
+          fi
           npm run release
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
